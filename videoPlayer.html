@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Player</title>
+    <link rel="stylesheet" href="vjsidhu.css">
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #000;
+        }
+
+        .slider-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            overflow: hidden;
+        }
+
+        .slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .related-videos {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .related-video {
+            margin: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="slider-container" id="sliderContainer">
+        <div class="slider">
+            <iframe id="youtubePlayer" allowfullscreen></iframe>
+        </div>
+    </div>
+    <div id="relatedVideos" class="related-videos"></div>
+    <script>
+        // Get the URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const videoPath = urlParams.get('video');
+        const seriesName = urlParams.get('series');
+
+        // Load the YouTube video if the video path is provided
+        if (videoPath) {
+            const youtubePlayer = document.getElementById('youtubePlayer');
+            youtubePlayer.src = videoPath + '?autoplay=1'; // Autoplay and mute
+        }
+
+        // Fullscreen functionality
+        const seriesData = {
+            'Japan': [
+                { title: 'Episode 01', video: 'https://www.youtube.com/embed/4Kn3z9XL5-U', thumbnail: 'https://i.ibb.co/Bg50wPb/youtube-thumbnail-medium.jpg' },
+                { title: 'Episode 02', video: 'https://www.youtube.com/embed/us8ueJD3P2c', thumbnail: 'https://i.ibb.co/Bg50wPb/youtube-thumbnail-medium.jpg' },
+                { title: 'Episode 03', video: 'https://www.youtube.com/embed/3UtjGMYW1v8', thumbnail: 'https://i.ibb.co/Bg50wPb/youtube-thumbnail-medium.jpg' }
+            ],
+            // Add more series and episodes as needed
+        };
+
+        // Get the related videos for the current series
+        const relatedVideos = seriesData[seriesName] || [];
+
+        // Display the related videos below the player
+        const relatedVideosContainer = document.getElementById('relatedVideos');
+        relatedVideos.forEach(episode => {
+            const videoCard = document.createElement('div');
+            videoCard.classList.add('related-video');
+            videoCard.innerHTML = `
+                <img src="${episode.thumbnail}" alt="${episode.title}">
+                <h3>${episode.title}</h3>
+                <button onclick="loadVideo('${episode.video}')">Watch</button>
+            `;
+            relatedVideosContainer.appendChild(videoCard);
+        });
+
+        // Function to load a new video in the iframe
+        function loadVideo(videoUrl) {
+            document.getElementById('youtubePlayer').src = videoUrl + '?autoplay=1';
+        }
+    </script>
+</body>
+</html>
